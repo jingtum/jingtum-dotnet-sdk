@@ -63,7 +63,7 @@ namespace Jingtum.API
                 parameter += Net.APIServer.SIGN_QUESTION_MARK + "currency=" + currency;
             }
 
-            if(issuer != string.Empty)
+            if (Utility.isValidAddress(issuer))
             {
                 parameter += (parameter != string.Empty) ? Net.APIServer.SIGN_AND : Net.APIServer.SIGN_QUESTION_MARK + "issuer=" + issuer;
             }

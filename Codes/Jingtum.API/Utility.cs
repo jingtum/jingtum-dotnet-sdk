@@ -22,6 +22,7 @@ namespace Jingtum.API
         {
             try
             {
+                //to be implemented.
                 //this.decodeAddress(address);
             }
             catch (Exception e)
