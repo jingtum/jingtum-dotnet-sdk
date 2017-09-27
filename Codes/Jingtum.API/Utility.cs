@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Jingtum.API
 {
     class Utility
@@ -18,12 +19,14 @@ namespace Jingtum.API
             return false;
         }
 
-        public static bool isValidAddress(String address)
+        public static bool IsValidAddress(String address)
         {
+            return true;
+
             try
             {
                 //to be implemented.
-                //this.decodeAddress(address);
+                Core.Config.GetB58IdentiferCodecs().DecodeAddress(address);
             }
             catch (Exception e)
             {
@@ -32,19 +35,19 @@ namespace Jingtum.API
             return true;
         }
 
-        //public byte[] encodeToBytesChecked(byte[] input, int version)
-        //{
-        //    byte[] buffer = new byte[input.Length + 1];
-        //    byte[] buffer_1 = new byte[1];
-        //    buffer_1[0] = (byte)version;
-        //    //System.arraycopy(input, 0, buffer, 1, input.length);
-        //    buffer = buffer_1.Concat(input);
-        //    buffer
-        //    byte[] checkSum = copyOfRange(HashUtils.doubleDigest(buffer), 0, 4);
-        //    byte[] output = new byte[buffer.length + checkSum.length];
-        //    System.arraycopy(buffer, 0, output, 0, buffer.length);
-        //    System.arraycopy(checkSum, 0, output, buffer.length, checkSum.length);
-        //    return encodeToBytes(output);
-        //}
+        public static byte[] CopyRange(byte[] buffer, int start, int end)
+        {
+            byte[] result = new byte[end - start];
+            int j = start;
+
+            for (int i = 0; i < end - start; i++)
+            {
+                result[i] = buffer[j++];                
+            }
+
+            return result;
+        }
+
+        
     }
 }

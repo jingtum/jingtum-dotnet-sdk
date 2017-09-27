@@ -179,5 +179,37 @@ namespace Jingtum.API
         #endregion
     }
 
+    public class Request_Order : Order
+    {
+        private string m_Secret;
+        private Order m_Order;
+
+        public string Secret
+        {
+            get
+            {
+                return m_Secret;
+            }
+
+            set
+            {
+                m_Secret = value;
+            }
+        }
+
+        public Order Order
+        {
+            get
+            {
+                return m_Order;
+            }
+
+            set
+            {
+                m_Order = value;
+            }
+        }
+    }
+
 
 }
