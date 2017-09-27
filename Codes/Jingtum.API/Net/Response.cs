@@ -12,6 +12,7 @@ namespace Jingtum.API.Net
         private bool m_Success;
         private string m_StatusCode;
         private Marker m_Marker;
+        private Wallet m_Wallet;
         private List<Balance> m_Balances = new List<Balance>();
         private Order m_Order;
         private List<Order> m_Orders = new List<Order>();
@@ -54,6 +55,19 @@ namespace Jingtum.API.Net
             set
             {
                 m_Marker = value;
+            }
+        }
+
+        public Wallet Wallet
+        {
+            get
+            {
+                return m_Wallet;
+            }
+
+            set
+            {
+                m_Wallet = value;
             }
         }
 
