@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Cache;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Jingtum.API.Net
 {
@@ -37,7 +38,11 @@ namespace Jingtum.API.Net
         //public const string Request_Url_Marker = "marker={ledger:" + ledger + ",seq:" + seq + "};
         //public const string Request_Url_Marker = "marker={ledger:{0},seq:{1}}";
 
-        
+        public const string REQUEST_METHOD_GET = "GET";
+        public const string REQUEST_METHOD_POST = "POST";
+        public const string REQUEST_METHOD_DELETE = "DELETE";
+        public const string REQUEST_METHOD_PUT = "PUT";
+        public const string REQUEST_METHOD_HEAD = "HEAD";
 
         //public const string Response_NoMorePayments = "{\n  \"success\": true,\n  \"payments\": []\n}";
         //public const string Response_NoMoreTransactions = "{\n  \"success\": true,\n  \"transactions\": []\n}";
@@ -57,29 +62,34 @@ namespace Jingtum.API.Net
         }
         #endregion
 
-        #region methods
-        public string GetResponse(string url)
+        #region request methods
+        public Response Request_Get(string url)
         {
-            m_Request = WebRequest.Create(url);
+            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_GET, url, string.Empty));
+        }
 
-            m_Request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore); ;
-            WebResponse response = m_Request.GetResponse();
+        public Response Request_Post(string url, string parameters)
+        {
+            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_POST, url, parameters));
+        }
 
-            if (response is HttpWebResponse && ((HttpWebResponse)response).StatusDescription != "OK")
+        public Response Request_Delete(string url, string parameters)
+        {
+            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_DELETE, url, parameters));
+        }
+
+        public Response ConvertResponse(string responseString)
+        {
+            BaseResponse response = JsonConvert.DeserializeObject<BaseResponse>(responseString);
+            if(response.Success)
             {
+                return JsonConvert.DeserializeObject<Response>(responseString);
             }
-
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            string responseFromServer = reader.ReadToEnd();
-
-            // Cleanup the streams and the response.            
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-            m_Request.Abort();
-
-            return responseFromServer;
+            else
+            {
+                ErrorResponse error = JsonConvert.DeserializeObject<ErrorResponse>(responseString);
+                throw new APIException(error.Error_Type, error.Error, error.Message);
+            }
         }
 
         public string Request(string method, string url, string parameters)
@@ -88,7 +98,6 @@ namespace Jingtum.API.Net
 
             m_Request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore); 
             m_Request.ContentType = "application/json";
-            //m_Request.Accept = "application/json";
             m_Request.Method = method;
             m_Request.Timeout = 30000;
 
@@ -96,8 +105,6 @@ namespace Jingtum.API.Net
             {
                 byte[] btBodys = Encoding.UTF8.GetBytes(parameters);
                 m_Request.ContentLength = btBodys.Length;
-                //httpWebRequest.KeepAlive = false;
-                //m_Request.ServicePoint.Expect100Continue = false;
                 m_Request.GetRequestStream().Write(btBodys, 0, btBodys.Length);
             }
 
@@ -111,6 +118,8 @@ namespace Jingtum.API.Net
             StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             string responseFromServer = reader.ReadToEnd();
 
+            //check if it is normal response or erorr response
+
             // Cleanup the streams and the response.            
             reader.Close();
             dataStream.Close();
@@ -119,7 +128,9 @@ namespace Jingtum.API.Net
 
             return responseFromServer;
         }
+        #endregion
 
+        #region format url methods
         public string FormatURL(string serverURL, string address, string type, string parameters)
         {
             return serverURL 
