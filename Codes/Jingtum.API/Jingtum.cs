@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
 
 namespace Jingtum.API
 {
@@ -148,18 +147,18 @@ namespace Jingtum.API
             }
         }
 
-        public virtual List<string> ToStringList()
-        {
-            PropertyInfo[] properties = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            List<string> lines = new List<string>();
+        //public virtual List<string> ToStringList()
+        //{
+        //    PropertyInfo[] properties = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        //    List<string> lines = new List<string>();
 
-            foreach (PropertyInfo property in properties)
-            {
-                string line = property.Name + ": " + property.GetValue(this);
-                lines.Add(line);
-            }
+        //    foreach (PropertyInfo property in properties)
+        //    {
+        //        string line = property.Name + ": " + property.GetValue(this);
+        //        lines.Add(line);
+        //    }
 
-            return lines;
-        }
+        //    return lines;
+        //}
     }
 }

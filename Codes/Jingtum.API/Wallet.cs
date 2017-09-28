@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 
 namespace Jingtum.API
@@ -15,17 +14,13 @@ namespace Jingtum.API
         #endregion        
 
         #region methods
-        private Net.Response GetResponseByUrl(string url)
-        {
-            return JsonConvert.DeserializeObject<Net.Response>(m_Server.GetResponse(url));
-        }
 
         #region new methods
         public static Wallet New()
         {
             string url = Net.APIServer.URL_SERVER_ADDRESS_WALLET + "new";
             Net.APIServer apiServer = new Net.APIServer();
-            return JsonConvert.DeserializeObject<Net.Response>(apiServer.GetResponse(url)).Wallet;
+            return apiServer.Request_Get(url).Wallet;
         }
         #endregion
 
@@ -62,7 +57,7 @@ namespace Jingtum.API
 
         private List<Balance> GetBalanceListByUrl(string url)
         {            
-            return GetResponseByUrl(url).Balances;
+            return m_Server.Request_Get(url).Balances;
         }
         #endregion
 
@@ -70,15 +65,15 @@ namespace Jingtum.API
         public Order GetOrder(string hash)
         {
             string parameter = Net.APIServer.SIGN_BACK_SLASH + hash;
-            return GetResponseByUrl((m_Server.FormatURL(this.Address, (new Order()).APIMethodName, parameter))).Order;
+            return m_Server.Request_Get((m_Server.FormatURL(this.Address, (new Order()).APIMethodName, parameter))).Order;
         }
 
         public List<Order> GetOrderList()
         {
-            return GetResponseByUrl((m_Server.FormatURL(this.Address, (new Order()).APIMethodName))).Orders;
+            return m_Server.Request_Get((m_Server.FormatURL(this.Address, (new Order()).APIMethodName))).Orders;
         }
 
-        public string SetOrder(Order order)
+        public Response SetOrder(Order order)
         {
             string format =
                 "{0}\"secret\":\"{2}\","
@@ -90,19 +85,22 @@ namespace Jingtum.API
 
             StringBuilder parameters = new StringBuilder();
             parameters.AppendFormat(format, "{", "}", this.Secret, order.Type, order.Pair, order.Amount.ToString(), order.Price.ToString());
-
-            return this.m_Server.Request("POST", m_Server.FormatURL(this.Address, (new Order()).APIMethodName), parameters.ToString());            
+  
+            return this.m_Server.Request_Post(m_Server.FormatURL(this.Address, (new Order()).APIMethodName), parameters.ToString());    
         }
 
-        public string CancelOrder(string sequence)
+        public Response CancelOrder(string sequence)
         {
             string parameters = "{\"secret\":\"" + this.Secret + "\"}";
-            return this.m_Server.Request("DELETE", 
-                m_Server.FormatURL(this.Address, (new Order()).APIMethodName) + Net.APIServer.SIGN_BACK_SLASH + sequence, parameters);
+            return this.m_Server.Request_Delete(m_Server.FormatURL(this.Address, (new Order()).APIMethodName) + Net.APIServer.SIGN_BACK_SLASH + sequence, parameters);
         }
         #endregion
 
         #region payment methods
+        public List<Payment> GetPaymentList()
+        {
+            return this.m_Server.Request_Get(m_Server.FormatURL(this.Address, (new Payment()).APIMethodName)).Payments;
+        }
         #endregion
 
         #region transactions methods

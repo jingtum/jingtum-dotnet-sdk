@@ -8,6 +8,7 @@ namespace Jingtum.API
 {
     public class JingtumException:Exception
     {
+        private const long SerialVersionUID = 1L;
         protected string m_Message;
 
         public override string Message
@@ -20,8 +21,7 @@ namespace Jingtum.API
     }
 
     public class InvalidParameterException:JingtumException 
-    {
-        private const long SerialVersionUID = 1L;
+    {        
         private string m_Param;
 	
         public string Param
@@ -32,7 +32,7 @@ namespace Jingtum.API
             }
         }
 
-        public InvalidParameterException(String message, String param)
+        public InvalidParameterException(string message, string param)
         {
             m_Message = message;
             this.m_Param = param;
@@ -41,11 +41,48 @@ namespace Jingtum.API
 
     public class EncodingFormatException : JingtumException
     {
-        private const long SerialVersionUID = 1L;
-
-        public EncodingFormatException(String message)
+        public EncodingFormatException(string message)
         {
             m_Message = message;
         }
     }
+
+    public class APIException : JingtumException 
+    {
+        private string m_ErrorType;
+        private string m_Error;
+
+        public APIException(string errorType, string error, string message)
+        {
+            m_ErrorType = errorType;
+            m_Error = error;
+            m_Message = message;
+        }
+
+        public string ErrorType
+        {
+            get
+            {
+                return m_ErrorType;
+            }
+        }
+
+        public string Error
+        {
+            get
+            {
+                return m_Error;
+            }
+        }
+    }
+
+    //enum APIExceptionErrorType
+    //{
+    //    Others,
+    //    ClientError,
+    //    NetworkError,
+    //    TransactionError,
+    //    ServerError,
+    //}
+	
 }

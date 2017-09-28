@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Reflection;
 
 namespace Jingtum.API
 {
-    class Utility
+    public class Utility
     {
         public static bool IsValidCurrency(String currency)
         {
@@ -48,6 +48,23 @@ namespace Jingtum.API
             return result;
         }
 
-        
+        public static List<string> ToStringList<T>(T obj)
+        {
+            PropertyInfo[] properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            List<string> lines = new List<string>();
+
+            foreach (PropertyInfo property in properties)
+            {
+                string line = property.Name + ": " + property.GetValue(obj);
+                lines.Add(line);
+            }
+
+            return lines;
+        }
+
+        public static DateTime ConvertUnixTime2DateTime(int unixtime)
+        {
+            return (TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1))).AddSeconds(unixtime);
+        }
     }
 }
