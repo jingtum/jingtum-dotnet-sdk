@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -593,12 +593,12 @@ namespace Jingtum.API
     public class PaymentChoice : JingtumObject
     {
         #region fields
-        private object m_Choice;
+        private Amount m_Choice;
         private string m_Key;
         #endregion
 
         #region properties
-        public object Choice
+        public Amount Choice
         {
             get
             {
@@ -624,35 +624,35 @@ namespace Jingtum.API
             }
         }
 
-        public double ChoiceAsNumber
-        {
-            get
-            {
-                double value;
-                return double.TryParse(Choice.ToString(), out value) ? value : double.NaN;
-            }
-        }
+        //public double ChoiceAsNumber
+        //{
+        //    get
+        //    {
+        //        double value;
+        //        return double.TryParse(Choice.ToString(), out value) ? value : double.NaN;
+        //    }
+        //}
 
-        public Amount ChoiceAsAmount
-        {
-            get
-            {
-                try 
-                {
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<Amount>(Choice.ToString());
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-        }
+        //public Amount ChoiceAsAmount
+        //{
+        //    get
+        //    {
+        //        try 
+        //        {
+        //            return Newtonsoft.Json.JsonConvert.DeserializeObject<Amount>(Choice.ToString());
+        //        }
+        //        catch
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}        
+        #endregion
 
         public override string APIMethodName()
         {
             return "choices";
         }
-        #endregion
     }
 
     public class OrderBook : JingtumObject
@@ -743,13 +743,13 @@ namespace Jingtum.API
             {
                 m_Sell = value;
             }
-        }
+        }        
+        #endregion
 
         public override string APIMethodName()
         {
             return "order_book";
         }
-        #endregion
     }
 
     public class Transaction : JingtumObject
