@@ -16,16 +16,11 @@ namespace Jingtum.API.Net
         public const string SIGN_BACK_SLASH = "/";
         public const string SIGN_QUESTION_MARK = "?";
         public const string SIGN_AND = "&";
+        public const string SIGN_ADD = "+";
 
         public const string URL_SERVER_ADDRESS = "https://api.jingtum.com/";
         public const string URL_SERVER_VERSION = "v2";
-        //https://api.jingtum.com/v2/wallet/
-        public const string URL_SERVER_ADDRESS_WALLET = 
-            URL_SERVER_ADDRESS 
-            + URL_SERVER_VERSION
-            + SIGN_BACK_SLASH
-            + "wallet"
-            + SIGN_BACK_SLASH;
+        
         //https://api.jingtum.com/v2/accounts/
         public const string URL_SERVER_ADDRESS_ACCOUNT = 
             URL_SERVER_ADDRESS 
@@ -63,27 +58,27 @@ namespace Jingtum.API.Net
         #endregion
 
         #region request methods
-        public Response Request_Get(string url)
+        public T Request_Get<T>(string url)
         {
-            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_GET, url, string.Empty));
+            return this.ConvertResponse<T>(this.Request(APIServer.REQUEST_METHOD_GET, url, string.Empty));
         }
 
-        public Response Request_Post(string url, string parameters)
+        public T Request_Post<T>(string url, string parameters)
         {
-            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_POST, url, parameters));
+            return this.ConvertResponse<T>(this.Request(APIServer.REQUEST_METHOD_POST, url, parameters));
         }
 
-        public Response Request_Delete(string url, string parameters)
+        public T Request_Delete<T>(string url, string parameters)
         {
-            return this.ConvertResponse(this.Request(APIServer.REQUEST_METHOD_DELETE, url, parameters));
+            return this.ConvertResponse<T>(this.Request(APIServer.REQUEST_METHOD_DELETE, url, parameters));
         }
 
-        public Response ConvertResponse(string responseString)
+        public T ConvertResponse<T>(string responseString)
         {
             BaseResponse response = JsonConvert.DeserializeObject<BaseResponse>(responseString);
-            if(response.Success)
+            if (response.Success)
             {
-                return JsonConvert.DeserializeObject<Response>(responseString);
+                return JsonConvert.DeserializeObject<T>(responseString);
             }
             else
             {
@@ -101,7 +96,7 @@ namespace Jingtum.API.Net
             m_Request.Method = method;
             m_Request.Timeout = 30000;
 
-            if (m_Request.Method == "POST" || m_Request.Method == "DELETE")
+            if (m_Request.Method == REQUEST_METHOD_POST || m_Request.Method == REQUEST_METHOD_DELETE)
             {
                 byte[] btBodys = Encoding.UTF8.GetBytes(parameters);
                 m_Request.ContentLength = btBodys.Length;
@@ -109,16 +104,9 @@ namespace Jingtum.API.Net
             }
 
             WebResponse response = m_Request.GetResponse();
-
-            if (response is HttpWebResponse && ((HttpWebResponse)response).StatusDescription != "OK")
-            {
-            }
-
             Stream dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             string responseFromServer = reader.ReadToEnd();
-
-            //check if it is normal response or erorr response
 
             // Cleanup the streams and the response.            
             reader.Close();
@@ -138,7 +126,6 @@ namespace Jingtum.API.Net
                 + address 
                 + SIGN_BACK_SLASH 
                 + type 
-                //+ SIGN_QUESTION_MARK 
                 + parameters;
         }
 
@@ -148,7 +135,6 @@ namespace Jingtum.API.Net
                 + address 
                 + SIGN_BACK_SLASH 
                 + type 
-                //+ SIGN_QUESTION_MARK 
                 + parameters;
         }
 
