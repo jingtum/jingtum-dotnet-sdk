@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -128,7 +128,7 @@ namespace Jingtum.API
             return "PaymentID_" + DateTime.Now.ToString("o"); // generate a unique client ID
         }
 
-        public List<PaymentChoice> GetPaymentChoices(string destinationAddress, string value, string currency, string issuer)
+        public List<PaymentChoice> GetPaymentChoices(string destinationAddress, double value, string currency, string issuer)
         {
             string parameter = (new Payment()).APIMethodName()
                 + Net.APIServer.SIGN_BACK_SLASH + (new PaymentChoice()).APIMethodName()
@@ -141,7 +141,7 @@ namespace Jingtum.API
 
         public List<PaymentChoice> GetPaymentChoices(string destinationAddress, Amount amount)
         {
-            return this.GetPaymentChoices(destinationAddress, amount.Value.ToString(), amount.Currency, amount.Issuer);
+            return this.GetPaymentChoices(destinationAddress, amount.Value, amount.Currency, amount.Issuer);
         }
         #endregion
 
