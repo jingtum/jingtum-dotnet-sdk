@@ -6,7 +6,23 @@ using System.Threading.Tasks;
 
 namespace Jingtum.API
 {
-    public class BaseResponse
+    #region base responses
+    public interface IResponse
+    {
+        bool Success
+        {
+            get;
+            set;
+        }
+
+        string Status_Code
+        {
+            get;
+            set;
+        }
+    }
+
+    public class BaseResponse : IResponse
     {
         #region fields
         private bool m_Success;
@@ -42,92 +58,18 @@ namespace Jingtum.API
         #endregion
     }
 
-    public class Response : BaseResponse
-    {
-        #region fields
-        private Marker m_Marker;
-        private Wallet m_Wallet;
-        private List<Balance> m_Balances = new List<Balance>();
-        private Order m_Order;
-        private List<Order> m_Orders = new List<Order>();
-        private List<Payment> m_Payments = new List<Payment>();
-        #endregion
-
-        #region properties
-        public Marker Marker
-        {
-            get
-            {
-                return m_Marker;
-            }
-
-            set
-            {
-                m_Marker = value;
-            }
-        }
-
-        public Wallet Wallet
-        {
-            get
-            {
-                return m_Wallet;
-            }
-
-            set
-            {
-                m_Wallet = value;
-            }
-        }
-
-        public List<Balance> Balances
-        {
-            get
-            {
-                return m_Balances;
-            }
-        }
-
-        public Order Order
-        {
-            get
-            {
-                return m_Order;
-            }
-
-            set
-            {
-                m_Order = value;
-            }
-        }
-
-        public List<Order> Orders
-        {
-            get
-            {
-                return m_Orders;
-            }
-        }
-
-        public List<Payment> Payments
-        {
-            get
-            {
-                return m_Payments;
-            }
-        }
-        #endregion
-    }
-
     /// <summary>
     /// The response result when Jingtum API return errors.
     /// </summary>
     public class ErrorResponse : BaseResponse
     {
+        #region fields
         private string m_Error_Type;
         private string m_Error;
         protected string m_Message;
+        #endregion
 
+        #region properties
         public string Message
         {
             set
@@ -166,110 +108,500 @@ namespace Jingtum.API
                 return m_Error;
             }
         }
+        #endregion
+    }    
+    #endregion
 
-    }
-
-    public class Marker
+    #region wallet responses
+    public class WalletResponse : BaseResponse
     {
-        //{
-        //"success": true,
-        //"status_code": "0",
-        //"marker": {
-        //"ledger": 7559633,
-        //"seq": 0
-        //},
-        //"transactions": [
-        //{
-        //    "date": 1505439030,
-        //    "hash": "1178604276A08D6C66CE9133F2064E1546431FC935961F9CD060E3F146520EF3",
-        //    "type": "offernew",
-        //    "fee": "0.00001",
-        //    "result": "tesSUCCESS",
-        //    "memos": [],
-        //    "offertype": "buy",
-        //    "seq": 441,
-        //    "effects": [
-        //    {
-        //        "effect": "offer_created",
-        //        "type": "buy",
-        //        "seq": 441,
-        //        "price": 0.00009999999999999999,
-        //        "pair": "SWT/CNY:jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
-        //        "amount": "511231000"
-        //    }
-        //    ],
-        //    "pair": "SWT/CNY:jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
-        //    "amount": "511231000",
-        //    "price": 0.00009999999999999999
-        //}
-        //]
-        //}
+        #region fields
+        private Wallet m_Wallet;
+        #endregion
 
-        private int m_Ledger;
-        private int m_Seq;
-
-        public int Ledger
+        #region properties
+        public Wallet Wallet
         {
             get
             {
-                return m_Ledger;
+                return m_Wallet;
             }
 
             set
             {
-                m_Ledger = value;
+                m_Wallet = value;
             }
         }
-
-        public int Seq
-        {
-            get
-            {
-                return m_Seq;
-            }
-
-            set
-            {
-                m_Seq = value;
-            }
-        }
-
-        //public static Marker Parse(string json)
-        //{
-        //    Marker marker = JsonConvert.DeserializeObject<Marker>(json);
-
-        //    return marker;
-        //}
-
-        //public static Marker Parse(List<string> lines)
-        //{
-        //    Marker marker = new Marker();
-
-        //    marker.Ledger = Marker.ParseLedger(lines[1]);
-        //    marker.Seq = Marker.ParseSeq(lines[2]);
-
-        //    return marker;
-        //}
-
-        //private static int ParseLedger(string line)
-        //{
-        //    Regex regex = new Regex("\"ledger\": (?<ledger>[\\s\\S]*?),", RegexOptions.IgnoreCase);
-        //    Match match = regex.Match(line);
-        //    if (match.Success)
-        //    {
-        //        return int.Parse(match.Groups["ledger"].Value);
-        //    }
-        //    else
-        //    {
-        //        return -1;
-        //    }
-        //}
-
-        //private static int ParseSeq(string line)
-        //{
-        //    //"    \"seq\": 0"
-        //    string seq = line.Remove(0, 11);
-        //    return int.Parse(seq);
-        //}
+        #endregion
     }
+
+    public class BalancesResponse : BaseResponse
+    {
+        #region fields
+        private List<Balance> m_Balances = new List<Balance>();
+        #endregion
+
+        #region properties
+        public List<Balance> Balances
+        {
+            get
+            {
+                return m_Balances;
+            }
+        }
+        #endregion
+    }
+    #endregion
+
+    #region payment responses
+    public class PaymentResponse : BaseResponse
+    {
+        #region fields
+        private Payment m_Payment = new Payment();
+        #endregion
+
+        #region properties
+        public Payment Payment
+        {
+            get
+            {
+                return m_Payment;
+            }
+
+            set
+            {
+                m_Payment = value;
+            }
+        }
+        
+        #region Date
+        public int Date
+        {
+            get
+            {
+                return m_Payment.Date;
+            }
+
+            set
+            {
+                m_Payment.Date = value;
+            }
+        }
+        #endregion
+
+        #region strings
+        public string Hash
+        {
+            get
+            {
+                return m_Payment.Hash;
+            }
+
+            set
+            {
+                m_Payment.Hash = value;
+            }
+        }
+
+        public string Type
+        {
+            get
+            {
+                return m_Payment.Type;
+            }
+
+            set
+            {
+                m_Payment.Type = value;
+            }
+        }
+
+        public string Result
+        {
+            get
+            {
+                return m_Payment.Result;
+            }
+
+            set
+            {
+                m_Payment.Result = value;
+            }
+        }
+
+        public List<string> Memos
+        {
+            get
+            {
+                return m_Payment.Memos;
+            }
+
+            set
+            {
+                m_Payment.Memos = value;
+            }
+        }
+        #endregion
+
+        #region numbers
+        public double Fee
+        {
+            get
+            {
+                return m_Payment.Fee;
+            }
+
+            set
+            {
+                m_Payment.Fee = value;
+            }
+        }
+
+        public Amount Amount
+        {
+            get
+            {
+                return m_Payment.Amount;
+            }
+
+            set
+            {
+                m_Payment.Amount = value;
+            }
+        }
+        #endregion
+
+        public List<Effects> Effects
+        {
+            get
+            {
+                return m_Payment.Effects;
+            }
+
+            set
+            {
+                m_Payment.Effects = value;
+            }
+        }
+        #endregion
+    }
+
+    public class PaymentsResponse : BaseResponse
+    {
+        #region fields
+        private List<Payment> m_Payments = new List<Payment>();
+        #endregion
+
+        #region properties
+        public List<Payment> Payments
+        {
+            get
+            {
+                return m_Payments;
+            }
+        }
+        #endregion
+    }
+
+    public class SetPaymentResponse : BaseResponse
+    {
+        #region fields
+        private string m_Client_ID;
+        private Payment m_Payment = new Payment();
+        #endregion
+
+        #region properties
+        public string Client_ID
+        {
+            set
+            {
+                m_Client_ID = value;
+            }
+
+            get
+            {
+                return m_Client_ID;
+            }
+        }
+
+        public string Hash
+        {
+            set
+            {
+                m_Payment.Hash = value;
+            }
+
+            get
+            {
+                return m_Payment.Hash;
+            }
+        }
+
+        public string Result
+        {
+            set
+            {
+                m_Payment.Result = value;
+            }
+
+            get
+            {
+                return m_Payment.Result;
+            }
+        }
+
+        public int Date
+        {
+            set
+            {
+                m_Payment.Date = value;
+            }
+
+            get
+            {
+                return m_Payment.Date;
+            }
+        }
+
+        public double Fee
+        {
+            set
+            {
+                m_Payment.Fee = value;
+            }
+
+            get
+            {
+                return m_Payment.Fee;
+            }
+        }
+        #endregion
+    }
+
+    public class PaymentChoicesResponse : BaseResponse
+    {
+        #region fields
+        private List<PaymentChoice> m_Choices = new List<PaymentChoice>();
+        #endregion
+
+        #region properties
+        public List<PaymentChoice> Choices
+        {
+            get
+            {
+                return m_Choices;
+            }
+        }
+        #endregion
+    }
+    #endregion
+
+    #region order responses
+    public class OrderResponse : BaseResponse
+    {
+        #region fields
+        private Order m_Order;
+        #endregion
+
+        #region properties
+        public Order Order
+        {
+            get
+            {
+                return m_Order;
+            }
+
+            set
+            {
+                m_Order = value;
+            }
+        }
+        #endregion
+    }
+
+    public class OrdersResponse : BaseResponse
+    {
+        #region fields
+        private List<Order> m_Orders = new List<Order>();
+        #endregion
+
+        #region properties
+        public List<Order> Orders
+        {
+            get
+            {
+                return m_Orders;
+            }
+        }
+        #endregion
+    }
+
+    public class OrderBookResponse : BaseResponse
+    {
+        #region fields
+        private string m_Pair;
+        private List<OrderBook> m_Asks = new List<OrderBook>();
+        private List<OrderBook> m_Bids = new List<OrderBook>();
+        #endregion
+
+        #region properties
+        public string Pair
+        {
+            get
+            {
+                return m_Pair;
+            }
+
+            set
+            {
+                m_Pair = value;
+            }
+        }
+
+        public List<OrderBook> Asks
+        {
+            get
+            {
+                return m_Asks;
+            }
+        }
+
+        public List<OrderBook> Bids
+        {
+            get
+            {
+                return m_Bids;
+            }
+        }
+        #endregion
+    }
+
+    public class SetOrderResponse : BaseResponse
+    {
+        #region fields
+        private string m_Hash;
+        private string m_Result;
+        private double m_Fee;
+        private long m_Sequence;
+        #endregion
+
+        #region properties
+        public double Fee
+        {
+            get
+            {
+                return m_Fee;
+            }
+
+            set
+            {
+                m_Fee = value;
+            }
+        }
+
+        public string Hash
+        {
+            get
+            {
+                return m_Hash;
+            }
+
+            set
+            {
+                m_Hash = value;
+            }
+        }
+
+        public string Result
+        {
+            get
+            {
+                return m_Result;
+            }
+
+            set
+            {
+                m_Result = value;
+            }
+        }
+
+        public long Sequence
+        {
+            get
+            {
+                return m_Sequence;
+            }
+
+            set
+            {
+                m_Sequence = value;
+            }
+        }
+        #endregion
+    }
+    #endregion
+
+    #region transaction responses
+    public class TransactionBaseResponse : BaseResponse
+    {
+        #region fields
+        private Marker m_Marker;
+        #endregion
+
+        #region properties
+        public Marker Marker
+        {
+            get
+            {
+                return m_Marker;
+            }
+
+            set
+            {
+                m_Marker = value;
+            }
+        }
+        #endregion
+    }
+
+    public class TranactionResponse : TransactionBaseResponse
+    {
+        #region fields
+        private Transaction m_Transaction;
+        #endregion
+
+        #region properties
+        public Transaction Transaction
+        {
+            get
+            {
+                return m_Transaction;
+            }
+
+            set
+            {
+                m_Transaction = value;
+            }
+        }
+        #endregion
+    }
+
+    public class TransactionsResponse : TransactionBaseResponse
+    {
+        #region fields
+        private List<Transaction> m_Transactions = new List<Transaction>();
+        #endregion
+
+        #region properties
+        public List<Transaction> Transactions
+        {
+            get
+            {
+                return m_Transactions;
+            }
+        }
+        #endregion
+    }
+    #endregion
+
 }

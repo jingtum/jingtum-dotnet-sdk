@@ -131,34 +131,9 @@ namespace Jingtum.API
     
     public abstract class JingtumObject
     {
-        //public virtual string JingtumTypeString
-        //{
-        //    get
-        //    {
-        //        return this.GetType().Name;
-        //    }
-        //}
-
-        public virtual string APIMethodName
+        public virtual string APIMethodName()
         {
-            get
-            {
-                return this.GetType().Name + "s";
-            }
+            return this.GetType().Name + "s";
         }
-
-        //public virtual List<string> ToStringList()
-        //{
-        //    PropertyInfo[] properties = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-        //    List<string> lines = new List<string>();
-
-        //    foreach (PropertyInfo property in properties)
-        //    {
-        //        string line = property.Name + ": " + property.GetValue(this);
-        //        lines.Add(line);
-        //    }
-
-        //    return lines;
-        //}
     }
 }

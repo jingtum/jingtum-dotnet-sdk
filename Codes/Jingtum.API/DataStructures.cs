@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Jingtum.API
 {
-    /// <summary>
-    /// Balance class.
-    /// </summary>
     public class Balance : JingtumObject
     {
         #region fields
@@ -334,12 +331,6 @@ namespace Jingtum.API
 
     public class CounterParty : JingtumObject
     {
-        //    "counterparty": {
-        //    "account": "j3oVY8Zho4mX3Q2ehcvjY7zukYmBLytvWi",
-        //    "seq": 240,
-        //    "hash": "DF388654EACCC19836523E8D79B26651F24399F41FC90C1A350E84541ACCBDA1"
-        //    },
-
         #region fields
         private string m_Account;
         private int m_Seq;
@@ -387,18 +378,16 @@ namespace Jingtum.API
         }
         #endregion
     }
-
-
-    /// <summary>
-    /// For paid, got, pays, gets.
-    /// </summary>
+    
     public class Amount : JingtumObject
     {
+        #region sample
         //    "paid": {
         //    "value": "0.01269999999999527",
         //    "currency": "CNY",
         //    "issuer": "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
         //    },
+        #endregion
 
         #region fields
         private double m_Value;
@@ -458,9 +447,9 @@ namespace Jingtum.API
         private string m_Result;
         private List<string> m_Memos;
         private List<Effects> m_Effects;
-        private object m_Amount;
+        private Amount m_Amount;
 
-        private CounterParty m_CounterParty;
+        private string m_CounterParty;
         #endregion
 
         #region properties
@@ -543,6 +532,19 @@ namespace Jingtum.API
                 m_Memos = value;
             }
         }
+
+        public string CounterParty
+        {
+            get
+            {
+                return m_CounterParty;
+            }
+
+            set
+            {
+                m_CounterParty = value;
+            }
+        }
         #endregion
 
         #region numbers
@@ -559,7 +561,7 @@ namespace Jingtum.API
             }
         }
 
-        public object Amount
+        public Amount Amount
         {
             get
             {
@@ -588,8 +590,171 @@ namespace Jingtum.API
         #endregion
     }
 
+    public class PaymentChoice : JingtumObject
+    {
+        #region fields
+        private object m_Choice;
+        private string m_Key;
+        #endregion
+
+        #region properties
+        public object Choice
+        {
+            get
+            {
+                return m_Choice;
+            }
+
+            set
+            {
+                m_Choice = value;
+            }
+        }
+
+        public string Key
+        {
+            get
+            {
+                return m_Key;
+            }
+
+            set
+            {
+                m_Key = value;
+            }
+        }
+
+        public double ChoiceAsNumber
+        {
+            get
+            {
+                double value;
+                return double.TryParse(Choice.ToString(), out value) ? value : double.NaN;
+            }
+        }
+
+        public Amount ChoiceAsAmount
+        {
+            get
+            {
+                try 
+                {
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<Amount>(Choice.ToString());
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
+
+        public override string APIMethodName()
+        {
+            return "choices";
+        }
+        #endregion
+    }
+
+    public class OrderBook : JingtumObject
+    {
+        #region fields
+        private double m_Price;
+        private double m_Funded;
+        private string m_Order_Maker;
+        private string m_Sequence;
+        private bool m_Passive;
+        private bool m_Sell;
+        #endregion
+
+        #region properties
+        public double Price
+        {
+            get
+            {
+                return m_Price;
+            }
+
+            set
+            {
+                m_Price = value;
+            }
+        }
+
+        public double Funded
+        {
+            get
+            {
+                return m_Funded;
+            }
+
+            set
+            {
+                m_Funded = value;
+            }
+        }
+
+        public string Order_Maker
+        {
+            get
+            {
+                return m_Order_Maker;
+            }
+
+            set
+            {
+                m_Order_Maker = value;
+            }
+        }
+
+        public string Sequence
+        {
+            get
+            {
+                return m_Sequence;
+            }
+
+            set
+            {
+                m_Sequence = value;
+            }
+        }
+
+        public bool Passive
+        {
+            get
+            {
+                return m_Passive;
+            }
+
+            set
+            {
+                m_Passive = value;
+            }
+        }
+
+        public bool Sell
+        {
+            get
+            {
+                return m_Sell;
+            }
+
+            set
+            {
+                m_Sell = value;
+            }
+        }
+
+        public override string APIMethodName()
+        {
+            return "order_book";
+        }
+        #endregion
+    }
+
     public class Transaction : JingtumObject
     {
+        #region sample
         //"transactions": [
         //{
         //"date": 1505046230,
@@ -629,6 +794,7 @@ namespace Jingtum.API
         //"price": 0.0127
         //}
         //]
+        #endregion        
 
         #region fields
         private int m_Date;
@@ -790,6 +956,78 @@ namespace Jingtum.API
             set
             {
                 m_Effects = value;
+            }
+        }
+        #endregion
+    }
+
+    public class Marker : JingtumObject
+    {
+        #region sample
+        //{
+        //"success": true,
+        //"status_code": "0",
+        //"marker": {
+        //"ledger": 7559633,
+        //"seq": 0
+        //},
+        //"transactions": [
+        //{
+        //    "date": 1505439030,
+        //    "hash": "1178604276A08D6C66CE9133F2064E1546431FC935961F9CD060E3F146520EF3",
+        //    "type": "offernew",
+        //    "fee": "0.00001",
+        //    "result": "tesSUCCESS",
+        //    "memos": [],
+        //    "offertype": "buy",
+        //    "seq": 441,
+        //    "effects": [
+        //    {
+        //        "effect": "offer_created",
+        //        "type": "buy",
+        //        "seq": 441,
+        //        "price": 0.00009999999999999999,
+        //        "pair": "SWT/CNY:jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        //        "amount": "511231000"
+        //    }
+        //    ],
+        //    "pair": "SWT/CNY:jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        //    "amount": "511231000",
+        //    "price": 0.00009999999999999999
+        //}
+        //]
+        //}
+        #endregion
+
+        #region fields
+        private int m_Ledger;
+        private int m_Seq;
+        #endregion
+
+        #region properties
+        public int Ledger
+        {
+            get
+            {
+                return m_Ledger;
+            }
+
+            set
+            {
+                m_Ledger = value;
+            }
+        }
+
+        public int Seq
+        {
+            get
+            {
+                return m_Seq;
+            }
+
+            set
+            {
+                m_Seq = value;
             }
         }
         #endregion
