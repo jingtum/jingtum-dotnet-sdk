@@ -81,6 +81,7 @@ namespace Jingtum.API.Core
             }
         }
 
+        #region decode by byte
         public byte[] Decode(string input)
         {
             if (input.Length == 0)
@@ -104,7 +105,7 @@ namespace Jingtum.API.Core
                 {
                     throw new EncodingFormatException("Illegal character " + c + " at " + i);
                 }
-                input58[i] = (byte)digit58;                
+                input58[i] = (byte)digit58;
             }
 
             // Count leading zeroes
@@ -121,6 +122,7 @@ namespace Jingtum.API.Core
             while (startAt < input58.Length)
             {
                 byte mod = Divmod256(input58, startAt);
+
                 if (input58[startAt] == 0)
                 {
                     ++startAt;
@@ -156,7 +158,8 @@ namespace Jingtum.API.Core
             byte[] hashed = Utility.CopyRange(HashUtils.DoubleHash(toHash), 0, 4);
             byte[] checksum = Utility.CopyRange(buffer, buffer.Length - 4, buffer.Length);
 
-            if (!hashed.Equals(checksum))
+            //if (!hashed.Equals(checksum))
+            if(!Utility.IfByteArrayEquals(hashed, checksum))
             {
                 throw new EncodingFormatException("Checksum does not validate");
             }
@@ -175,13 +178,18 @@ namespace Jingtum.API.Core
                 int digit58 = (int)number58[i] & 0xFF;
                 int temp = remainder * 58 + digit58;
 
+                //Console.WriteLine("i:" + i + "   digit58:" + digit58);
+
                 number58[i] = (byte)(temp / 256);
 
                 remainder = temp % 256;
             }
 
+            //-128~127
+            //remainder = (remainder > 127) ? (remainder - 256) : remainder;
             return (byte)remainder;
         }
+        #endregion
     }
 
     class HashUtils
@@ -193,9 +201,9 @@ namespace Jingtum.API.Core
 
         public static byte[] DoubleHash(byte[] input, int offset, int length)
         {
-            HashAlgorithm hash = HashAlgorithm.Create("SHA512");
-            byte[] code = hash.ComputeHash(Encoding.UTF8.GetBytes(BitConverter.ToString(input)), offset, length);
-            code = hash.ComputeHash(Encoding.UTF8.GetBytes(BitConverter.ToString(code)));
+            SHA256 sha256 = new SHA256CryptoServiceProvider();
+            byte[] code = sha256.ComputeHash(input, offset, length);
+            code = sha256.ComputeHash(code);
             return code;
         }
     }
