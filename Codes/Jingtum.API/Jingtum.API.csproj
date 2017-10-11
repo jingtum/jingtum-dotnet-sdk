@@ -32,7 +32,10 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\JSON\Json100r1\Bin\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\SDK\JSON\Json100r1\Bin\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\SDK\NUnit\NUnit.Framework-3.8.1\bin\net-4.5\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,14 +48,19 @@
   <ItemGroup>
     <Compile Include="Core\Config.cs" />
     <Compile Include="Core\Encodings.cs" />
+    <Compile Include="Core\Seed.cs" />
     <Compile Include="DataStructures.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Jingtum.cs" />
     <Compile Include="Net\APIServer.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test\WalletTest.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Wallet.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

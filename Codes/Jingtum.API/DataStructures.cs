@@ -92,7 +92,7 @@ namespace Jingtum.API
         private string m_Type;
         private double m_Amount;
         private double m_Price;
-        private long m_Sequence;
+        private int m_Sequence;
         #endregion
 
         #region properties
@@ -161,7 +161,7 @@ namespace Jingtum.API
             }
         }
 
-        public long Sequence
+        public int Sequence
         {
             get
             {
@@ -661,7 +661,7 @@ namespace Jingtum.API
         private double m_Price;
         private double m_Funded;
         private string m_Order_Maker;
-        private string m_Sequence;
+        private int m_Sequence;
         private bool m_Passive;
         private bool m_Sell;
         #endregion
@@ -706,7 +706,7 @@ namespace Jingtum.API
             }
         }
 
-        public string Sequence
+        public int Sequence
         {
             get
             {
@@ -1028,6 +1028,439 @@ namespace Jingtum.API
             set
             {
                 m_Seq = value;
+            }
+        }
+        #endregion
+    }
+
+    //public class EngineResult : JingtumObject
+    //{
+    //    #region fields
+    //    private string m_Result;
+    //    private string m_Code;
+    //    private string m_Message;
+    //    #endregion
+
+    //    #region properties
+    //    public string Result
+    //    {
+    //        get
+    //        {
+    //            return m_Result;
+    //        }
+
+    //        set
+    //        {
+    //            m_Result = value;
+    //        }
+    //    }
+
+    //    public string Code
+    //    {
+    //        get
+    //        {
+    //            return m_Code;
+    //        }
+
+    //        set
+    //        {
+    //            m_Code = value;
+    //        }
+    //    }
+
+    //    public string Message
+    //    {
+    //        get
+    //        {
+    //            return m_Message;
+    //        }
+
+    //        set
+    //        {
+    //            m_Message = value;
+    //        }
+    //    }
+    //    #endregion
+    //}
+
+    public class DealRequest : JingtumObject
+    {
+        #region fields
+        #region common
+        private string m_Account;
+        private double m_Fee;
+        private string m_Flags;
+        private string m_Sequence;
+        private string m_SigningPubKey;
+        private string m_TransactionType;
+        private string m_TxnSignature;
+        private string m_Hash;
+        #endregion
+
+        #region special
+        private string m_Method;
+        private int m_Timestamp;
+        private double m_Amount;
+        private string m_Payload;
+        private List<Arg> m_Args;
+        private string m_ContractMethod;
+        private string m_Destination;
+        #endregion
+        #endregion
+
+        #region properties
+        #region common
+        public string Account
+        {
+            get
+            {
+                return m_Account;
+            }
+
+            set
+            {
+                m_Account = value;
+            }
+        }        
+
+        public double Fee
+        {
+            get
+            {
+                return m_Fee;
+            }
+
+            set
+            {
+                m_Fee = value;
+            }
+        }
+
+        public string Flags
+        {
+            get
+            {
+                return m_Flags;
+            }
+
+            set
+            {
+                m_Flags = value;
+            }
+        }
+
+        public string Sequence
+        {
+            get
+            {
+                return m_Sequence;
+            }
+
+            set
+            {
+                m_Sequence = value;
+            }
+        }
+
+        public string SigningPubKey
+        {
+            get
+            {
+                return m_SigningPubKey;
+            }
+
+            set
+            {
+                m_SigningPubKey = value;
+            }
+        }
+
+        public string TransactionType
+        {
+            get
+            {
+                return m_TransactionType;
+            }
+
+            set
+            {
+                m_TransactionType = value;
+            }
+        }
+
+        public string TxnSignature
+        {
+            get
+            {
+                return m_TxnSignature;
+            }
+
+            set
+            {
+                m_TxnSignature = value;
+            }
+        }
+
+        public string Hash
+        {
+            get
+            {
+                return m_Hash;
+            }
+
+            set
+            {
+                m_Hash = value;
+            }
+        }
+        #endregion
+
+        #region special
+        public string Method
+        {
+            get
+            {
+                return m_Method;
+            }
+
+            set
+            {
+                m_Method = value;
+            }
+        }
+
+        public int Timestamp
+        {
+            get
+            {
+                return m_Timestamp;
+            }
+
+            set
+            {
+                m_Timestamp = value;
+            }
+        }
+
+        public double Amount
+        {
+            get
+            {
+                return m_Amount;
+            }
+
+            set
+            {
+                m_Amount = value;
+            }
+        }
+
+        public string Payload
+        {
+            get
+            {
+                return m_Payload;
+            }
+
+            set
+            {
+                m_Payload = value;
+            }
+        }
+
+        public List<Arg> Args
+        {
+            get
+            {
+                return m_Args;
+            }
+
+            set
+            {
+                m_Args = value;
+            }
+        }
+
+        public string ContractMethod
+        {
+            get
+            {
+                return m_ContractMethod;
+            }
+
+            set
+            {
+                m_ContractMethod = value;
+            }
+        }
+
+        public string Destination
+        {
+            get
+            {
+                return m_Destination;
+            }
+
+            set
+            {
+                m_Destination = value;
+            }
+        } 
+        #endregion
+        #endregion
+    }
+
+    public class Arg : JingtumObject
+    {
+        #region fields
+        private string m_Parameter;
+        #endregion
+
+        #region properties
+        public string Parameter
+        {
+            get
+            {
+                return m_Parameter;
+            }
+
+            set
+            {
+                m_Parameter = value;
+            }
+        }        
+        #endregion
+    }
+
+    public class ContractState : JingtumObject
+    {
+        #region fields
+        private string m_Account;
+        private double m_Balance;
+        private string m_Flags;
+        private string m_LedgerEntryType;
+        private int m_OwnerCount;
+        private string m_PreviousTxnID;
+        private int m_PreviousTxnLgrSeq;
+        private int m_Sequence;
+        private string m_Index;
+        #endregion
+
+        #region properties
+        public string Account
+        {
+            get
+            {
+                return m_Account;
+            }
+
+            set
+            {
+                m_Account = value;
+            }
+        }
+
+        public double Balance
+        {
+            get
+            {
+                return m_Balance;
+            }
+
+            set
+            {
+                m_Balance = value;
+            }
+        }
+
+        public string Flags
+        {
+            get
+            {
+                return m_Flags;
+            }
+
+            set
+            {
+                m_Flags = value;
+            }
+        }
+
+        public string LedgerEntryType
+        {
+            get
+            {
+                return m_LedgerEntryType;
+            }
+
+            set
+            {
+                m_LedgerEntryType = value;
+            }
+        }
+
+        public int OwnerCount
+        {
+            get
+            {
+                return m_OwnerCount;
+            }
+
+            set
+            {
+                m_OwnerCount = value;
+            }
+        }
+
+        public string PreviousTxnID
+        {
+            get
+            {
+                return m_PreviousTxnID;
+            }
+
+            set
+            {
+                m_PreviousTxnID = value;
+            }
+        }
+
+        public int PreviousTxnLgrSeq
+        {
+            get
+            {
+                return m_PreviousTxnLgrSeq;
+            }
+
+            set
+            {
+                m_PreviousTxnLgrSeq = value;
+            }
+        }
+
+        public int Sequence
+        {
+            get
+            {
+                return m_Sequence;
+            }
+
+            set
+            {
+                m_Sequence = value;
+            }
+        }
+
+        public string Index
+        {
+            get
+            {
+                return m_Index;
+            }
+
+            set
+            {
+                m_Index = value;
             }
         }
         #endregion

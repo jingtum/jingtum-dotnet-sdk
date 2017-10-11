@@ -482,7 +482,7 @@ namespace Jingtum.API
         private string m_Hash;
         private string m_Result;
         private double m_Fee;
-        private long m_Sequence;
+        private int m_Sequence;
         #endregion
 
         #region properties
@@ -525,7 +525,7 @@ namespace Jingtum.API
             }
         }
 
-        public long Sequence
+        public int Sequence
         {
             get
             {
@@ -604,4 +604,125 @@ namespace Jingtum.API
     }
     #endregion
 
+    public class DealResponse : BaseResponse
+    {
+        #region fields        
+        private string m_Result;
+        private string m_Code;
+        private string m_Message;
+        private string m_Tx_blob;
+        private DealRequest m_Tx_json;
+        #endregion
+
+        #region properties        
+        public string Result
+        {
+            get
+            {
+                return m_Result;
+            }
+
+            set
+            {
+                m_Result = value;
+            }
+        }
+
+        public string Code
+        {
+            get
+            {
+                return m_Code;
+            }
+
+            set
+            {
+                m_Code = value;
+            }
+        }
+
+        public string Message
+        {
+            get
+            {
+                return m_Message;
+            }
+
+            set
+            {
+                m_Message = value;
+            }
+        }
+
+        public string Tx_blob
+        {
+            get
+            {
+                return m_Tx_blob;
+            }
+
+            set
+            {
+                m_Tx_blob = value;
+            }
+        }
+
+        public DealRequest Tx_json
+        {
+            get
+            {
+                return m_Tx_json;
+            }
+
+            set
+            {
+                m_Tx_json = value;
+            }
+        }
+        #endregion
+    }
+
+    public class DeployResponse : DealResponse
+    {
+        #region fields
+        private string m_ContractState;
+        #endregion
+
+        #region properties
+        public string ContractState
+        {
+            get
+            {
+                return m_ContractState;
+            }
+
+            set
+            {
+                m_ContractState = value;
+            }
+        }
+        #endregion
+    }
+
+    public class CallResponse : DealResponse
+    {
+        #region fields
+        private ContractState m_ContractState;
+        #endregion
+
+        #region properties
+        public ContractState ContractState
+        {
+            get
+            {
+                return m_ContractState;
+            }
+
+            set
+            {
+                m_ContractState = value;
+            }
+        }
+        #endregion
+    }
 }
