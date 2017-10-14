@@ -18,17 +18,34 @@ namespace Jingtum.API
         public const string CURRENCY_SPC = "SPC";
         #endregion
 
-        public static bool IsValidCurrency(String currency)
+        public static bool IsValidCurrency(string currency)
         {
             // Currently only check the length of the currency
-            if (currency != string.Empty && (currency.Length == 3 || currency.Length == 40))
+            if (currency != string.Empty && (currency.Length == 3 || currency.Length == 40) && currency.ToUpper() == currency)
             {
                 return true;
             }
             return false;
         }
 
-        public static bool IsValidAddress(String address)
+        public static string FormatCurrency(string currency)
+        {
+            return currency.ToUpper();
+        }
+
+        public static bool IsValidSecret(string secret)
+        {
+            return true;
+
+            //to be implemented.
+            //if (IsValidAddress(Seed.ComputeAddress(secret)))
+            //{
+            //    return true;
+            //}
+            //return false;
+        }
+
+        public static bool IsValidAddress(string address)
         {
             try
             {

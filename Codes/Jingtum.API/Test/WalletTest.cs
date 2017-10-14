@@ -101,32 +101,26 @@ namespace Jingtum.API.Test
             payment.Amount = amount;
 
             string destinationAddress = m_Wallet_WithoutSecret.Address;
-            string choiceHash = string.Empty;
+            string choiceHash = "f53b09afcf9e1758a7b647f2f738c86426cabfc1";
 
             List<string> memos = new List<string>();
-            memos.Add("Test: " + DateTime.Now.ToString("o"));           
-
+            memos.Add("Test: " + DateTime.Now.ToString("o"));  
+     
             string clientID = m_Wallet.GenerateClientID();
             string expectParameter = "{\"secret\":\"saESGGsyFnTEW9BPWQ6bCfqwNgESU\",\"client_id\":\"" 
-                + clientID 
-                + "\",\"payment\":{\"source\":\"jP189vbfqsByaxKY1UEdAtRXTwaBBkDgVJ\",\"destination\":\"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi\",\"amount\":{\"value\":\"100000\",\"currency\":\"CNY\",\"issuer\":\"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or\"},\"memos\":[\""
+                + clientID
+                + "\",\"payment\":{\"source\":\"jP189vbfqsByaxKY1UEdAtRXTwaBBkDgVJ\",\"destination\":\"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi\","
+                + "\"amount\":{\"value\":\"100000\",\"currency\":\"CNY\",\"issuer\":\"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or\"},"
+                + "\"choice\":\"f53b09afcf9e1758a7b647f2f738c86426cabfc1\",\"memos\":[\""
                 + memos[0]
                 + "\"]}}";
 
-            Assert.IsTrue(IsSetPaymentParameterEqualsWithoutClientID(expectParameter, this.m_Wallet.GetParameters_SetPayment(payment, destinationAddress, choiceHash, memos)));
-        }
+            string actualParameter = this.m_Wallet.GetParameters_SetPayment(payment, destinationAddress, choiceHash, memos);
 
-        private bool IsSetPaymentParameterEqualsWithoutClientID(string expectParameter, string actualParameter)
-        {
             List<string> expectParameters = SplitSetPaymentParameter(expectParameter);
             List<string> actualParameters = SplitSetPaymentParameter(actualParameter);
-
-            if (expectParameters[0] == actualParameters[0] && expectParameters[1] == actualParameters[1])
-            {
-                return true;
-            }
-
-            return false;
+            Assert.AreEqual(expectParameters[0], actualParameters[0]);
+            Assert.AreEqual(expectParameters[1], actualParameters[1]);            
         }
 
         private List<string> SplitSetPaymentParameter(string parameter)
@@ -522,7 +516,7 @@ namespace Jingtum.API.Test
 
         #region new
         //[Test]
-        public void TestWalletNew()
+        public void Test_Wallet_New()
         {
             Wallet newWallet = Wallet.New();
             Assert.AreEqual('j', newWallet.Address[0]); // test if the address starts with 'j".
@@ -532,9 +526,18 @@ namespace Jingtum.API.Test
         }
         #endregion
 
+        #region IsActived
+        //[Test]
+        public void Test_Wallet_IsActived()
+        {
+            Assert.IsFalse(m_Wallet.IsActived);
+            Assert.IsTrue(m_Wallet_WithoutSecret.IsActived);            
+        }
+        #endregion
+
         #region balances
         //[Test]
-        public void TestWalletBalances()
+        public void Test_Wallet_Balances()
         {
             //test balances urls.
             //no options.

@@ -71,7 +71,7 @@ namespace Jingtum.API
 
         internal string GetUrl_Balances(string currency, string issuer)
         {
-            string parameter = Net.APIServer.FormatParameter_Currency(string.Empty, currency);
+            string parameter = Net.APIServer.FormatParameter_Currency(string.Empty, Utility.FormatCurrency(currency));
             parameter = Net.APIServer.FormatParameter_Issuer(parameter, issuer);
             return m_Server.FormatURL(this.Address, (new Balance()).APIMethodName(), parameter);
         }
@@ -171,7 +171,7 @@ namespace Jingtum.API
             StringBuilder parameters = new StringBuilder();
 
             parameters.AppendFormat(format, "{", "}", this.Secret, this.GenerateClientID(), this.Address, destinationAddress,
-                payment.Amount.Value.ToString(), payment.Amount.Currency, payment.Amount.Issuer, choiceString, memosString);
+                payment.Amount.Value.ToString(), Utility.FormatCurrency(payment.Amount.Currency), payment.Amount.Issuer, choiceString, memosString);
 
             return parameters.ToString();
         }
@@ -197,7 +197,7 @@ namespace Jingtum.API
                 + Net.APIServer.SIGN_BACKSLASH + (new PaymentChoice()).APIMethodName()
                 + Net.APIServer.SIGN_BACKSLASH + destinationAddress
                 + Net.APIServer.SIGN_BACKSLASH + value
-                + Net.APIServer.SIGN_ADD + currency
+                + Net.APIServer.SIGN_ADD + Utility.FormatCurrency(currency)
                 + Net.APIServer.SIGN_ADD + issuer;
 
             return m_Server.FormatURL(this.Address, parameter);
@@ -311,9 +311,9 @@ namespace Jingtum.API
             string parameter = (new OrderBook()).APIMethodName()
                 + typeParameter
                 + Net.APIServer.SIGN_BACKSLASH
-                + Net.APIServer.FormatParameter_Currency_CounterParty(baseCurrency, baseCounterParty)
+                + Net.APIServer.FormatParameter_Currency_CounterParty(Utility.FormatCurrency(baseCurrency), baseCounterParty)
                 + Net.APIServer.SIGN_BACKSLASH
-                + Net.APIServer.FormatParameter_Currency_CounterParty(counterCurrency, counterCounterParty)
+                + Net.APIServer.FormatParameter_Currency_CounterParty(Utility.FormatCurrency(counterCurrency), counterCounterParty)
                 + Net.APIServer.FormatParameter_Result_Per_Page(string.Empty, results_per_page, page);
 
             return Net.APIServer.URL_SERVER_ADDRESS_VERSION + parameter;
