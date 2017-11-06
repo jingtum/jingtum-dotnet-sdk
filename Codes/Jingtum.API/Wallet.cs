@@ -132,6 +132,11 @@ namespace Jingtum.API
         #region set payment
         internal string GetParameters_SetPayment(Payment payment, string destinationAddress, string choiceHash, List<string> memos)
         {
+            if (!Utility.IsValidSecret(this.Secret))
+            {
+                throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_SECRET, this.Secret);
+            }
+
             string choiceString = (choiceHash == string.Empty) ? string.Empty : ",\"choice\":\"" + choiceHash + "\"";
             //string memosString = string.Empty;
             //if (memos != null && memos.Count > 0)
@@ -262,6 +267,11 @@ namespace Jingtum.API
         #region set and cancel order
         internal string GetParameters_SetOrder(Order order)
         {
+            if (!Utility.IsValidSecret(this.Secret))
+            {
+                throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_SECRET, this.Secret);
+            }
+
             string format =
                 "{0}\"secret\":\"{2}\","
                 + "\"order\":{0}"
@@ -286,6 +296,11 @@ namespace Jingtum.API
 
         internal string GetParameters_CancelOrder()
         {
+            if (!Utility.IsValidSecret(this.Secret))
+            {
+                throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_SECRET, this.Secret);
+            }
+
             string parameter = "{\"secret\":\"" + this.Secret + "\"}";
             return parameter;
         }
@@ -545,7 +560,14 @@ namespace Jingtum.API
 
             set
             {
-                m_Address = value;
+                if (Utility.IsValidAddress(value))
+                {
+                    m_Address = value;
+                }
+                else
+                {
+                    throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_ADDRESS, value);
+                }
             }
         }
 
@@ -559,6 +581,15 @@ namespace Jingtum.API
             set
             {
                 m_Secret = value;
+
+                //if (Utility.IsValidSecret(value))
+                //{
+                //    m_Secret = value;
+                //}
+                //else
+                //{
+                //    throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_SECRET, value);
+                //}                
             }
         }
         #endregion
