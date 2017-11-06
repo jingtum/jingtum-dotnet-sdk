@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +35,10 @@ namespace Jingtum.API
 
         public static bool IsValidSecret(string secret)
         {
+            if(secret == null || secret == string.Empty)
+            {
+                return false;
+            }
             return true;
 
             //to be implemented.
