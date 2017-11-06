@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -104,7 +104,7 @@ namespace Jingtum.API
         public const string SPECIFY_ORDER_TYPE = "Please specify an order type!";
         public const string ACCOUNT_NOT_FOUND = "Account not found.";
         public const string INACTIVATED_ACCOUNT = "Inactivated Account;";
-        public const string INVALID_SECRET = "Invalid Jingtum account secret!";
+        public const string INVALID_JINGTUM_SECRET = "Invalid Jingtum account secret!";
         public const string INVALID_JINGTUM_AMOUNT = "Invalid JingtumAmount! Please make sure Currency and issuer are all valid.";
         public const string INVALID_TRUST_LINE = "Invalid trust line! Please make sure Currency and Counterparty are all valid.";
         public const string INVALID_JINGTUM_ADDRESS_OR_SECRET = "Invalid address or secret!";
