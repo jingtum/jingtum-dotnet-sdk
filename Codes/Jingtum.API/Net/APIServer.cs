@@ -20,6 +20,7 @@ namespace Jingtum.API.Net
         public const string SIGN_EQUAL = "=";
 
         public const string URL_SERVER_ADDRESS = "https://api.jingtum.com/";
+        //public const string URL_SERVER_ADDRESS = "https://tapi.jingtum.com/";
         public const string URL_SERVER_VERSION = "v2";
 
         //https://api.jingtum.com/v2/
@@ -102,7 +103,7 @@ namespace Jingtum.API.Net
             m_Request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore); 
             m_Request.ContentType = "application/json";
             m_Request.Method = method;
-            m_Request.Timeout = 30000;
+            m_Request.Timeout = 10000;
 
             if (m_Request.Method == REQUEST_METHOD_POST || m_Request.Method == REQUEST_METHOD_DELETE)
             {
