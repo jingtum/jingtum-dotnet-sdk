@@ -229,6 +229,19 @@ namespace Jingtum.API
             }
         }
 
+        public string CounterParty
+        {
+            get
+            {
+                return m_Payment.CounterParty;
+            }
+
+            set
+            {
+                m_Payment.CounterParty = value;
+            }
+        }
+
         public List<string> Memos
         {
             get
