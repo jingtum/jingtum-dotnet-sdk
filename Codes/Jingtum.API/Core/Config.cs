@@ -12,23 +12,20 @@ namespace Jingtum.API.Core
 
         private static B58IdentiferCodecs m_B58IdentiferCodecs;
 
+        static Config()
+        {
+            SetAlphabet(DEFAULT_ALPHABET);
+        }
+
         public static void SetAlphabet(String alphabet)
         {
             B58 b58 = new B58(alphabet);
             m_B58IdentiferCodecs = new B58IdentiferCodecs(b58);
         }
 
-        public static B58IdentiferCodecs GetB58IdentiferCodecs() 
+        public static B58IdentiferCodecs GetB58IdentiferCodecs()
         {
-            SetAlphabet(DEFAULT_ALPHABET);
             return m_B58IdentiferCodecs;
         }
-
-        /***
-         * We set up all the defaults here
-         */
-        //static {
-        //    setAlphabet(DEFAULT_ALPHABET);
-        //}
     }
 }

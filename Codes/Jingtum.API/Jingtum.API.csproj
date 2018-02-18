@@ -30,9 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>External Assemblies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -48,8 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Config.cs" />
+    <Compile Include="Core\Crypto\Ecdsa\ECDSASignature.cs" />
+    <Compile Include="Core\Crypto\Ecdsa\KeyPair.cs" />
+    <Compile Include="Core\Crypto\Ecdsa\SECP256K1.cs" />
+    <Compile Include="Core\Crypto\Ecdsa\Seed.cs" />
     <Compile Include="Core\Encodings.cs" />
-    <Compile Include="Core\Seed.cs" />
+    <Compile Include="Core\Utils.cs" />
     <Compile Include="DataStructures.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Jingtum.cs" />
@@ -63,6 +70,10 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

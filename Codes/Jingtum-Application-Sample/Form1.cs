@@ -29,8 +29,7 @@ namespace Jingtum_Application_Sample
         //balance
         private void button2_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox1.Text;
+            Wallet wallet = new Wallet(this.textBox1.Text);
             List<Balance> balances = new List<Balance>();
             balances = wallet.GetBalanceList();
             this.ShowPropertyValueList<Balance>(balances);
@@ -41,8 +40,7 @@ namespace Jingtum_Application_Sample
         //get choices
         private void button5_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox7.Text;
+            Wallet wallet = new Wallet(this.textBox7.Text);
 
             string distinationAddress = this.textBox8.Text;
             int amount = int.Parse(this.textBox9.Text);
@@ -56,9 +54,7 @@ namespace Jingtum_Application_Sample
         //set payment
         private void button6_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox12.Text;
-            wallet.Secret = this.textBox13.Text;
+            Wallet wallet = new Wallet(this.textBox12.Text, this.textBox13.Text);
 
             Payment payment = new Payment();
             Amount amount = new Amount();
@@ -79,8 +75,7 @@ namespace Jingtum_Application_Sample
         //get payment
         private void button3_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox2.Text;
+            Wallet wallet = new Wallet(this.textBox2.Text);
             string hash = this.textBox3.Text;
 
             Payment payment = wallet.GetPayment(hash);
@@ -90,8 +85,7 @@ namespace Jingtum_Application_Sample
         //get payments
         private void button4_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox4.Text;
+            Wallet wallet = new Wallet(this.textBox4.Text);
 
             List<Payment> payments = new List<Payment>();
             payments = wallet.GetPaymentList(int.Parse(this.textBox5.Text), int.Parse(this.textBox6.Text));
@@ -102,8 +96,7 @@ namespace Jingtum_Application_Sample
         #region transaction
         private void button7_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox16.Text;
+            Wallet wallet = new Wallet(this.textBox16.Text);
             string hash = this.textBox17.Text;
 
             Transaction transaction = wallet.GetTransaction(hash);
@@ -112,8 +105,7 @@ namespace Jingtum_Application_Sample
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox18.Text;
+            Wallet wallet = new Wallet(this.textBox18.Text);
 
             int pageSize = int.Parse(this.textBox19.Text);
             int page = int.Parse(this.textBox20.Text);
@@ -129,8 +121,7 @@ namespace Jingtum_Application_Sample
         //get order
         private void button9_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox23.Text;
+            Wallet wallet = new Wallet(this.textBox23.Text);
             string hash = this.textBox24.Text;
 
             Order order = wallet.GetOrder(hash);
@@ -140,8 +131,7 @@ namespace Jingtum_Application_Sample
         //get orders
         private void button10_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox25.Text;
+            Wallet wallet = new Wallet(this.textBox25.Text);
 
             int pageSize = int.Parse(this.textBox26.Text);
             int page = int.Parse(this.textBox27.Text);
@@ -153,8 +143,7 @@ namespace Jingtum_Application_Sample
         //get order books
         private void button11_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox28.Text;
+            Wallet wallet = new Wallet(this.textBox28.Text);
 
             int pageSize = int.Parse(this.textBox29.Text);
             int page = int.Parse(this.textBox30.Text);
@@ -185,10 +174,8 @@ namespace Jingtum_Application_Sample
         //set order
         private void button12_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox31.Text;
-            wallet.Secret = this.textBox32.Text;
-
+            Wallet wallet = new Wallet(this.textBox31.Text, this.textBox32.Text);
+            
             Order order = new Order();
             order.Type = this.radioButton6.Checked ? "sell" : "buy";
             order.Amount = double.Parse(this.textBox33.Text);
@@ -202,9 +189,7 @@ namespace Jingtum_Application_Sample
         //cancel order
         private void button13_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet();
-            wallet.Address = this.textBox35.Text;
-            wallet.Secret = this.textBox36.Text;
+            Wallet wallet = new Wallet(this.textBox35.Text, this.textBox36.Text);
             int order = int.Parse(this.textBox37.Text);
 
             this.ShowPropertyValue<SetOrderResponse>(wallet.CancelOrder(order));

@@ -1,3 +1,4 @@
+using Jingtum.API.Core.Crypto.Ecdsa;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,13 @@ namespace Jingtum.API
         #endregion        
 
         #region constructor
-        public Wallet()
+        
+        public Wallet(string address) : base(address)
         {
         }
 
-        public Wallet(string address, string secret)
+        public Wallet(string address, string secret):base(address, secret)
         {
-            this.Address = address;
-            this.Secret = secret;
         }
         #endregion
 
@@ -34,7 +34,7 @@ namespace Jingtum.API
                 {
                     return this.GetBalanceList(Utility.CURRENCY_SWT, string.Empty)[0].Value >= Wallet.MIN_ACTIVATED_AMOUNT;
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
                     return false;
                 }                
@@ -546,52 +546,33 @@ namespace Jingtum.API
     {
         #region field
         protected const double MIN_ACTIVATED_AMOUNT = 25;
-        protected string m_Address;
-        protected string m_Secret;
         #endregion
 
+        public Account(string address)
+        {
+            if (!Utility.IsValidAddress(address))
+            {
+                throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_ADDRESS, address);
+            }
+
+            Address = address;
+        }
+
+        public Account(string address, string secret)
+        {
+            if (!Utility.ValidateKeyPair(address, secret))
+            {
+                throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_ADDRESS_OR_SECRET, address + secret);
+            }
+
+            Address = address;
+            Secret = secret;
+        }
+
         #region properties
-        public string Address
-        {
-            get
-            {
-                return m_Address;
-            }
+        public string Address { get; private set; }
 
-            set
-            {
-                if (Utility.IsValidAddress(value))
-                {
-                    m_Address = value;
-                }
-                else
-                {
-                    throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_ADDRESS, value);
-                }
-            }
-        }
-
-        public string Secret
-        {
-            get
-            {
-                return m_Secret;
-            }
-
-            set
-            {
-                m_Secret = value;
-
-                //if (Utility.IsValidSecret(value))
-                //{
-                //    m_Secret = value;
-                //}
-                //else
-                //{
-                //    throw new InvalidParameterException(JingtumMessage.INVALID_JINGTUM_SECRET, value);
-                //}                
-            }
-        }
+        public string Secret { get; private set; }
         #endregion
     }
 }

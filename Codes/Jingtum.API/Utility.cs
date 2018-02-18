@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using Jingtum.API.Core.Crypto.Ecdsa;
 
 namespace Jingtum.API
 {
@@ -32,6 +33,31 @@ namespace Jingtum.API
         {
             return currency.ToUpper();
         }
+        
+        /// <summary>
+        /// Validate the address and secret pair.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="secret"></param>
+        /// <returns>true if the address and secret is valid.</returns>
+        public static bool ValidateKeyPair(String address, String secret)
+        {
+            String myAddress = null;
+            try
+            {
+                myAddress = Seed.ComputeAddress(secret); // compute address from secret
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(address) && address.Equals(myAddress))
+            {
+                return true;
+            }
+            return false;
+        }
 
         public static bool IsValidSecret(string secret)
         {
@@ -39,14 +65,16 @@ namespace Jingtum.API
             {
                 return false;
             }
-            return true;
 
-            //to be implemented.
-            //if (IsValidAddress(Seed.ComputeAddress(secret)))
-            //{
-            //    return true;
-            //}
-            //return false;
+            try
+            {
+                var address = Seed.ComputeAddress(secret);
+                return IsValidAddress(address);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static bool IsValidAddress(string address)
@@ -55,7 +83,7 @@ namespace Jingtum.API
             {
                 Core.Config.GetB58IdentiferCodecs().DecodeAddress(address);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

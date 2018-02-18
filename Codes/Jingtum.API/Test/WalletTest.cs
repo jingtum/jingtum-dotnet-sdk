@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Jingtum.API.Core;
 using NUnit.Framework;
 
 namespace Jingtum.API.Test
@@ -11,7 +12,7 @@ namespace Jingtum.API.Test
     public class Test_Wallet_Url
     {
         Wallet m_Wallet = new Wallet(@"jP189vbfqsByaxKY1UEdAtRXTwaBBkDgVJ", @"saESGGsyFnTEW9BPWQ6bCfqwNgESU");
-        Wallet m_Wallet_WithoutSecret = new Wallet(@"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi", string.Empty);
+        Wallet m_Wallet_WithoutSecret = new Wallet(@"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi");
 
         string m_ValidCurrency = Utility.CURRENCY_CNY;
         string m_InvalidCurrency = "NES4";
@@ -506,7 +507,7 @@ namespace Jingtum.API.Test
     public class Test_Wallet_API
     {
         Wallet m_Wallet = new Wallet(@"jP189vbfqsByaxKY1UEdAtRXTwaBBkDgVJ", @"saESGGsyFnTEW9BPWQ6bCfqwNgESU");
-        Wallet m_Wallet_WithoutSecret = new Wallet(@"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi", string.Empty);
+        Wallet m_Wallet_WithoutSecret = new Wallet(@"jfdLqEWhfYje92gEaWixVWsYKjK5C6bMoi");
 
         string m_ValidCurrency = Utility.CURRENCY_CNY;
         string m_InvalidCurrency = "NES";

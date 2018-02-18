@@ -1,60 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Text;
+using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Jingtum.API.Core
 {
-    class B58IdentiferCodecs
+    internal class B58IdentiferCodecs
     {
         public const int VER_ACCOUNT_ID        = 0;
         public const int VER_FAMILY_SEED       = 33;
         
-        B58 m_B58;
+        private B58 _b58;
 
         public B58IdentiferCodecs(B58 base58encoder)
         {
-            this.m_B58 = base58encoder;
+            _b58 = base58encoder;
         }
 
         public byte[] Decode(String d, int version)
         {
-            return m_B58.DecodeChecked(d, version);
+            return _b58.DecodeChecked(d, version);
         }
 
-        //public String encode(byte[] d, int version)
-        //{
-        //    return m_B58.EncodeToStringChecked(d, version);
-        //}
+        public String Encode(byte[] d, int version)
+        {
+            return _b58.EncodeToStringChecked(d, version);
+        }
 
         public byte[] DecodeFamilySeed(String master_seed)
         {
-            byte[] bytes = m_B58.DecodeChecked(master_seed, VER_FAMILY_SEED);
+            byte[] bytes = _b58.DecodeChecked(master_seed, VER_FAMILY_SEED);
             return bytes;
         }
 
-        //public String encodeAddress(byte[] bytes)
-        //{
-        //    return encode(bytes, VER_ACCOUNT_ID);
-        //}
+        public String EncodeAddress(byte[] bytes)
+        {
+            return Encode(bytes, VER_ACCOUNT_ID);
+        }
 
         public byte[] DecodeAddress(String address)
         {
             return Decode(address, VER_ACCOUNT_ID);
         }
 
-        //public String encodeFamilySeed(byte[] bytes)
-        //{
-        //    return encode(bytes, VER_FAMILY_SEED);
-        //}
+        public String EncodeFamilySeed(byte[] bytes)
+        {
+            return Encode(bytes, VER_FAMILY_SEED);
+        }
     }
 
-    class B58
+    internal class B58
     {
-        private int[] m_Indexes;
-        private char[] m_Alphabet;
+        private int[] _indexes;
+        private char[] _alphabet;
 
         public B58(String alphabet)
         {
@@ -64,24 +63,99 @@ namespace Jingtum.API.Core
 
         private void SetAlphabet(String alphabet)
         {
-            m_Alphabet = alphabet.ToArray();
+            _alphabet = alphabet.ToArray();
         }
 
         private void BuildIndexes()
         {
-            m_Indexes = new int[128];
+            _indexes = new int[128];
 
-            for (int i = 0; i < m_Indexes.Length; i++)
+            for (int i = 0; i < _indexes.Length; i++)
             {
-                m_Indexes[i] = -1;
+                _indexes[i] = -1;
             }
-            for (int i = 0; i < m_Alphabet.Length; i++)
+            for (int i = 0; i < _alphabet.Length; i++)
             {
-                m_Indexes[m_Alphabet[i]] = i;
+                _indexes[_alphabet[i]] = i;
             }
         }
 
-        #region decode by byte
+        #region encode/decode by byte
+
+        public String EncodeToStringChecked(byte[] input, int version)
+        {
+            try
+            {
+                var bytes = EncodeToBytesChecked(input, version);
+                return Encoding.ASCII.GetString(bytes);
+            }
+            catch (ArgumentException e)
+            {
+                throw e;  // Cannot happen.
+            }
+        }
+
+        public byte[] EncodeToBytesChecked(byte[] input, int version)
+        {
+            byte[] buffer = new byte[input.Length + 1];
+            buffer[0] = (byte)version;
+            Array.Copy(input, 0, buffer, 1, input.Length);
+            byte[] checkSum = Utility.CopyRange(HashUtils.DoubleHash(buffer), 0, 4);
+            byte[] output = new byte[buffer.Length + checkSum.Length];
+            Array.Copy(buffer, 0, output, 0, buffer.Length);
+            Array.Copy(checkSum, 0, output, buffer.Length, checkSum.Length);
+            return EncodeToBytes(output);
+        }
+
+        /// <summary>
+        /// Encodes the given bytes in base58. No checksum is appended.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public byte[] EncodeToBytes(byte[] input)
+        {
+            if (input.Length == 0)
+            {
+                return new byte[0];
+            }
+            input = Utility.CopyRange(input, 0, input.Length);
+            // Count leading zeroes.
+            int zeroCount = 0;
+            while (zeroCount < input.Length && input[zeroCount] == 0)
+            {
+                ++zeroCount;
+            }
+            // The actual encoding.
+            byte[] temp = new byte[input.Length * 2];
+            int j = temp.Length;
+
+            int startAt = zeroCount;
+            while (startAt < input.Length)
+            {
+                byte mod = Divmod58(input, startAt);
+                if (input[startAt] == 0)
+                {
+                    ++startAt;
+                }
+                temp[--j] = (byte)_alphabet[mod];
+            }
+
+            // Strip extra '1' if there are some after decoding.
+            while (j < temp.Length && temp[j] == _alphabet[0])
+            {
+                ++j;
+            }
+            // Add as many leading '1' as there were leading zeros.
+            while (--zeroCount >= 0)
+            {
+                temp[--j] = (byte)_alphabet[0];
+            }
+
+            byte[] output;
+            output = Utility.CopyRange(temp, j, temp.Length);
+            return output;
+        }
+
         public byte[] Decode(string input)
         {
             if (input.Length == 0)
@@ -98,7 +172,7 @@ namespace Jingtum.API.Core
                 int digit58 = -1;
                 if (c >= 0 && c < 128)
                 {
-                    digit58 = m_Indexes[c];
+                    digit58 = _indexes[c];
                 }
 
                 if (digit58 < 0)
@@ -168,6 +242,26 @@ namespace Jingtum.API.Core
         }
 
         //
+        // number -> number / 58, returns number % 58
+        //
+        private byte Divmod58(byte[] number, int startAt)
+        {
+            int remainder = 0;
+            for (int i = startAt; i < number.Length; i++)
+            {
+                int digit256 = (int)number[i] & 0xFF;
+                int temp = remainder * 256 + digit256;
+
+                number[i] = (byte)(temp / 58);
+
+                remainder = temp % 58;
+            }
+
+            return (byte)remainder;
+        }
+
+
+        //
         // number -> number / 256, returns number % 256
         //
         private byte Divmod256(byte[] number58, int startAt)
@@ -192,19 +286,69 @@ namespace Jingtum.API.Core
         #endregion
     }
 
-    class HashUtils
+    internal class B16
     {
-        public static byte[] DoubleHash(byte[] input)
+        public static String ToStringTrimmed(byte[] bytes)
         {
-            return HashUtils.DoubleHash(input, 0, input.Length);
+            int offset = 0;
+            if (bytes[0] == 0)
+            {
+                offset = 1;
+            }
+            return Hex.ToHexString(bytes, offset, bytes.Length - offset).ToUpper();
+        }
+    }
+
+    internal class Sha512
+    {
+        private SHA512CryptoServiceProvider _csp = new SHA512CryptoServiceProvider();
+        private byte[] _bytes = new byte[0];
+
+        public Sha512()
+        {
         }
 
-        public static byte[] DoubleHash(byte[] input, int offset, int length)
+        public Sha512(byte[] start)
         {
-            SHA256 sha256 = new SHA256CryptoServiceProvider();
-            byte[] code = sha256.ComputeHash(input, offset, length);
-            code = sha256.ComputeHash(code);
-            return code;
+            Add(start);
+        }
+
+        public Sha512 Add(byte[] bytes)
+        {
+            _bytes = _bytes.Concat(bytes).ToArray();
+            return this;
+        }
+
+        public Sha512 Add32(int i)
+        {
+            var values = new byte[4];
+            values[0] = (byte)((i >> 24) & 0xFF);
+            values[1] = (byte)((i >> 16) & 0xFF);
+            values[2] = (byte)((i >> 8) & 0xFF);
+            values[3] = (byte)((i) & 0xFF);
+            return Add(values);
+        }
+
+        private byte[] FinishTaking(int size)
+        {
+            byte[] hash = new byte[size];
+            Array.Copy(_csp.ComputeHash(_bytes), 0, hash, 0, size);
+            return hash;
+        }
+
+        public byte[] Finish128()
+        {
+            return FinishTaking(16);
+        }
+
+        public byte[] Finish256()
+        {
+            return FinishTaking(32);
+        }
+
+        public byte[] Finish()
+        {
+            return _csp.ComputeHash(_bytes);
         }
     }
 }
