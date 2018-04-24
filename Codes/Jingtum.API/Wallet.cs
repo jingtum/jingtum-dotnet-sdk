@@ -8,6 +8,39 @@ using System.Threading.Tasks;
 
 namespace Jingtum.API
 {
+    public class Wallet2
+    {
+        private string m_Address;
+        private string m_Secret;
+
+        public string Address
+        {
+            get
+            {
+                return m_Address;
+            }
+
+            set
+            {
+                m_Address = value;
+            }
+        }
+
+        public string Secret
+        {
+            get
+            {
+                return m_Secret;
+            }
+
+            set
+            {
+                m_Secret = value;
+            }
+        }
+
+    }
+
     public class Wallet : Account
     {
         #region fields
@@ -15,6 +48,9 @@ namespace Jingtum.API
         #endregion        
 
         #region constructor
+        public Wallet()
+        {
+        }
         
         public Wallet(string address) : base(address)
         {
@@ -548,6 +584,11 @@ namespace Jingtum.API
         protected const double MIN_ACTIVATED_AMOUNT = 25;
         #endregion
 
+        //have to add a default constructor for JsonConvert.DeserializeObject 
+        public Account()
+        {
+        }
+
         public Account(string address)
         {
             if (!Utility.IsValidAddress(address))
@@ -570,9 +611,14 @@ namespace Jingtum.API
         }
 
         #region properties
-        public string Address { get; private set; }
+        //public string Address { get; private set; }
 
-        public string Secret { get; private set; }
+        //public string Secret { get; private set; }
+
+        //cannot set set as private, otherwise cannot pass JsonConvert.DeserializeObject 
+        public string Address { get; set; }
+
+        public string Secret { get; set; }    
         #endregion
     }
 }
