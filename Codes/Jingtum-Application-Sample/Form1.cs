@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Jingtum.API;
+//using Jingtum.API;
 
 namespace Jingtum_Application_Sample
 {
@@ -22,17 +22,17 @@ namespace Jingtum_Application_Sample
         //new
         private void button1_Click(object sender, EventArgs e)
         {
-            Wallet newWallet = Wallet.New();
-            this.ShowPropertyValue<Wallet>(newWallet);
+            Jingtum.API.Wallet newWallet = Jingtum.API.Wallet.New();
+            this.ShowPropertyValue<Jingtum.API.Wallet>(newWallet);
         }
 
         //balance
         private void button2_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox1.Text);
-            List<Balance> balances = new List<Balance>();
-            balances = wallet.GetBalanceList();
-            this.ShowPropertyValueList<Balance>(balances);
+            String address = this.textBox1.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
+            List<Jingtum.API.Balance> balances = wallet.GetBalanceList();
+            this.ShowPropertyValueList<Jingtum.API.Balance>(balances);
         }
         #endregion
 
@@ -40,80 +40,94 @@ namespace Jingtum_Application_Sample
         //get choices
         private void button5_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox7.Text);
-
+            string address = this.textBox7.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             string distinationAddress = this.textBox8.Text;
             int amount = int.Parse(this.textBox9.Text);
             string currency = this.textBox10.Text;
             string issue = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
-
-            List<PaymentChoice> choices = wallet.GetPaymentChoices(distinationAddress, amount, currency, issue);
-            this.ShowPropertyValue<List<PaymentChoice>>(choices);
+            List<Jingtum.API.PaymentChoice> choices = wallet.GetPaymentChoices(distinationAddress, amount, currency, issue);
+            this.ShowPropertyValue<List<Jingtum.API.PaymentChoice>>(choices);
         }
 
         //set payment
         private void button6_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox12.Text, this.textBox13.Text);
+            //Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(this.textBox12.Text, this.textBox13.Text);
 
-            Payment payment = new Payment();
-            Amount amount = new Amount();
+            //Jingtum.API.Payment payment = new Jingtum.API.Payment();
+            //Jingtum.API.Amount amount = new Jingtum.API.Amount();
+            //amount.Value = int.Parse(this.textBox14.Text);
+            //amount.Currency = this.textBox11.Text;
+            //amount.Issuer = string.Empty;
+            //payment.Amount = amount;
+
+            //List<string> memos = new List<string>();
+            //memos.Add("Test: " + DateTime.Now.ToString("o"));
+
+            //string distinationAddress = this.textBox15.Text;
+
+            //Jingtum.API.SetPaymentResponse res = wallet.SetPayment(payment, distinationAddress, string.Empty, memos);
+            //this.ShowPropertyValue<Jingtum.API.SetPaymentResponse>(res);
+
+
+            string address = this.textBox12.Text;
+            string secret = this.textBox13.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address, secret);
+            Jingtum.API.Payment payment = new Jingtum.API.Payment();
+            Jingtum.API.Amount amount = new Jingtum.API.Amount();
             amount.Value = int.Parse(this.textBox14.Text);
             amount.Currency = this.textBox11.Text;
             amount.Issuer = string.Empty;
             payment.Amount = amount;
-
             List<string> memos = new List<string>();
             memos.Add("Test: " + DateTime.Now.ToString("o"));
-
             string distinationAddress = this.textBox15.Text;
-
-            SetPaymentResponse res = wallet.SetPayment(payment, distinationAddress, string.Empty, memos);
-            this.ShowPropertyValue<SetPaymentResponse>(res);
+            Jingtum.API.SetPaymentResponse res = wallet.SetPayment(payment, distinationAddress, string.Empty, memos);
+            this.ShowPropertyValue<Jingtum.API.SetPaymentResponse>(res);
         }
 
         //get payment
         private void button3_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox2.Text);
+            string address = this.textBox2.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             string hash = this.textBox3.Text;
-
-            Payment payment = wallet.GetPayment(hash);
-            this.ShowPropertyValue<Payment>(payment);
+            Jingtum.API.Payment payment = wallet.GetPayment(hash);
+            this.ShowPropertyValue<Jingtum.API.Payment>(payment);
         }
 
         //get payments
         private void button4_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox4.Text);
-
-            List<Payment> payments = new List<Payment>();
+            string address = this.textBox4.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);   
+            List<Jingtum.API.Payment> payments = new List<Jingtum.API.Payment>();
             payments = wallet.GetPaymentList(int.Parse(this.textBox5.Text), int.Parse(this.textBox6.Text));
-            this.ShowPropertyValueList<Payment>(payments);
+            this.ShowPropertyValueList<Jingtum.API.Payment>(payments);
         }
         #endregion
 
         #region transaction
         private void button7_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox16.Text);
+            string address = this.textBox16.Text;            
             string hash = this.textBox17.Text;
-
-            Transaction transaction = wallet.GetTransaction(hash);
-            this.ShowPropertyValue<Transaction>(transaction);
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
+            Jingtum.API.Transaction transaction = wallet.GetTransaction(hash);
+            this.ShowPropertyValue<Jingtum.API.Transaction>(transaction);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox18.Text);
-
+            string address = this.textBox18.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             int pageSize = int.Parse(this.textBox19.Text);
             int page = int.Parse(this.textBox20.Text);
-            int ledger = int.Parse(this.textBox21.Text);
-            int seq = int.Parse(this.textBox22.Text);
-
-            List<Transaction> transactions = wallet.GetTransactions(pageSize, page, ledger, seq);
-            this.ShowPropertyValue<List<Transaction>>(transactions);
+            int ledger = this.textBox21.Text == string.Empty ? 0 : int.Parse(this.textBox21.Text);
+            int seq = this.textBox22.Text == string.Empty ? 0 : int.Parse(this.textBox22.Text);
+            List<Jingtum.API.Transaction> transactions = wallet.GetTransactions(pageSize, page, ledger, seq);
+            this.ShowPropertyValue<List<Jingtum.API.Transaction>>(transactions);
         }
         #endregion
 
@@ -121,40 +135,36 @@ namespace Jingtum_Application_Sample
         //get order
         private void button9_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox23.Text);
+            string address = this.textBox23.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             string hash = this.textBox24.Text;
-
-            Order order = wallet.GetOrder(hash);
-            this.ShowPropertyValue<Order>(order);
+            Jingtum.API.Order order = wallet.GetOrder(hash);
+            this.ShowPropertyValue<Jingtum.API.Order>(order);
         }
 
         //get orders
         private void button10_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox25.Text);
-
+            string address = this.textBox25.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             int pageSize = int.Parse(this.textBox26.Text);
             int page = int.Parse(this.textBox27.Text);
-
-            List<Order> orders = wallet.GetOrderList(pageSize, page);
-            this.ShowPropertyValue<List<Order>>(orders);
+            List<Jingtum.API.Order> orders = wallet.GetOrderList(pageSize, page);
+            this.ShowPropertyValue<List<Jingtum.API.Order>>(orders);
         }
 
         //get order books
         private void button11_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox28.Text);
-
+            string address = this.textBox28.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address);
             int pageSize = int.Parse(this.textBox29.Text);
             int page = int.Parse(this.textBox30.Text);
-
             string baseCurrency = "SWT";
             string baseCounterParty = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
             string counterCurrency = "CNY";
             string counterCounterParty = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
-
-            OrderBookResponse response = null;
-
+            Jingtum.API.OrderBookResponse response = null;
             if(this.radioButton1.Checked)
             {
                 response = wallet.GetOrderBooks(baseCurrency, baseCounterParty, counterCurrency, counterCounterParty, pageSize, page);
@@ -168,31 +178,34 @@ namespace Jingtum_Application_Sample
                 response = wallet.GetOrderBookAsks(baseCurrency, baseCounterParty, counterCurrency, counterCounterParty, pageSize, page);
             }
 
-            this.ShowPropertyValue<OrderBookResponse>(response);            
+            this.ShowPropertyValue<Jingtum.API.OrderBookResponse>(response);            
         }
 
         //set order
         private void button12_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox31.Text, this.textBox32.Text);
-            
-            Order order = new Order();
+            string address = this.textBox31.Text;
+            string secret = this.textBox32.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address, secret);
+            Jingtum.API.Order order = new Jingtum.API.Order();
             order.Type = this.radioButton6.Checked ? "sell" : "buy";
             order.Amount = double.Parse(this.textBox33.Text);
             order.Price = double.Parse(this.textBox34.Text);
             order.Pair = (this.radioButton6.Checked ? "SWT/CNY" : "CNY/SWT") + ":jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
 
-            this.ShowPropertyValue<SetOrderResponse>(wallet.SetOrder(order));
+            this.ShowPropertyValue<Jingtum.API.SetOrderResponse>(wallet.SetOrder(order));
 
         }
 
         //cancel order
         private void button13_Click(object sender, EventArgs e)
         {
-            Wallet wallet = new Wallet(this.textBox35.Text, this.textBox36.Text);
+            string address = this.textBox35.Text;
+            string secret = this.textBox36.Text;
+            Jingtum.API.Wallet wallet = new Jingtum.API.Wallet(address, secret);
             int order = int.Parse(this.textBox37.Text);
 
-            this.ShowPropertyValue<SetOrderResponse>(wallet.CancelOrder(order));
+            this.ShowPropertyValue<Jingtum.API.SetOrderResponse>(wallet.CancelOrder(order));
         }
         #endregion
 
